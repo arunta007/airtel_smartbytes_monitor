@@ -24,18 +24,20 @@ plotgraph(<filename>)
 
 '''
 
-#This function accepts file name and return two vectors containing date and value separately.
 def getdata(fname):
-	f = open(fname, 'rt')
-	x = []
-	y = []
-	try:
-		reader = csv.reader(f)
-		for row in reader:
-			x.append(row[:1])
-			y.append(row[1:])
-	finally:
-		f.close()
+	'''
+	This function accepts file name and return two vectors containing date and value separately.
+	'''
+	with f = open(fname, 'rt'):
+		x = []
+		y = []
+		try:
+			reader = csv.reader(f)
+			for row in reader:
+				x.append(row[:1])
+				y.append(row[1:])
+		except Exception as error:
+			print str(error)
 	return x, y
 
 
@@ -48,13 +50,14 @@ def get_my(date):
 def getdateonly(dates):
 	date_stripped = []
 	for date in dates:
-			
 		date_object = parser.parse(date[0])
 		date_stripped.append(str(date_object.day))
 	return date_stripped
 
-#Core method of this module. Accepts the file name of a csv as input and draws graph.
 def plotgraph(fname):
+	'''
+	Core method of this module. Accepts the file name of a csv as input and draws graph.
+	'''
 	x_ticks, y = getdata(fname)
 	x_ticks = getdateonly(x_ticks)
 	l = len(x_ticks)
