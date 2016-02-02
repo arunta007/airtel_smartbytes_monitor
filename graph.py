@@ -3,7 +3,6 @@ from dateutil import parser
 import calendar
 import numpy as np
 import csv
-import sys
 
 '''
 The 'fname' sent to this module should be the name of a file which
@@ -24,55 +23,64 @@ plotgraph(<filename>)
 
 '''
 
+
 def getdata(fname):
-	'''
-	This function accepts file name and return two vectors containing date and value separately.
-	'''
-	with f = open(fname, 'rt'):
-		x = []
-		y = []
-		try:
-			reader = csv.reader(f)
-			for row in reader:
-				x.append(row[:1])
-				y.append(row[1:])
-		except Exception as error:
-			print str(error)
-	return x, y
+    '''
+    This function accepts file name and return two vectors
+    containing date and value separately.
+    '''
+    with open(fname) as f:
+        x = []
+        y = []
+        try:
+            reader = csv.reader(f)
+            for row in reader:
+                x.append(row[:1])
+                y.append(row[1:])
+        except Exception as error:
+            print str(error)
+    return x, y
 
 
-#To strip day from date. Used for plotting the X-axis
 def get_my(date):
-	date_object = parser.parse(date)
-	return date_object.month, date_object.year
+    '''
+    To strip day from date. Used for plotting the X-axis
+    '''
+    date_object = parser.parse(date)
+    return date_object.month, date_object.year
 
-#To strip month and year. Used for giving title to the graph
+
 def getdateonly(dates):
-	date_stripped = []
-	for date in dates:
-		date_object = parser.parse(date[0])
-		date_stripped.append(str(date_object.day))
-	return date_stripped
+    '''
+    To strip month and year. Used for giving title to the graph
+    '''
+    date_stripped = []
+    for date in dates:
+        date_object = parser.parse(date[0])
+        date_stripped.append(str(date_object.day))
+    return date_stripped
+
 
 def plotgraph(fname):
-	'''
-	Core method of this module. Accepts the file name of a csv as input and draws graph.
-	'''
-	x_ticks, y = getdata(fname)
-	x_ticks = getdateonly(x_ticks)
-	l = len(x_ticks)
-	x = np.array(range(1, l+1))
-	pl.xticks(x, x_ticks)
-	pl.plot(x, y, color = 'green', marker = 'o', linestyle = 'solid')
-	m, y = get_my(x_ticks[0][0])
-	month = calendar.month_name[int(m)]
-	title = 'Airtel Internet: Usage Statistics for '+month+' '+str(y)
-	pl.title (title)
-	pl.ylabel("GiB Used So Far This Month")
-	pl.xlabel("Date")
-	pl.show()
+    '''
+    Core method of this module. Accepts the file name
+    of a csv as input and draws graph.
+    '''
+    x_ticks, y = getdata(fname)
+    x_ticks = getdateonly(x_ticks)
+    l = len(x_ticks)
+    x = np.array(range(1, l+1))
+    pl.xticks(x, x_ticks)
+    y_temp = y
+    pl.plot(x, y, color='green', marker='o', linestyle='solid')
+    m, y = get_my(x_ticks[0][0])
+    month = calendar.month_name[int(m)]
+    title = 'Airtel Internet: Usage Statistics for '+month+' '+str(y)
+    pl.title(title)
+    pl.ylabel("GiB Used So Far This Month")
+    pl.xlabel("Date")
+    pl.show()
 
 
-#Testing:
-#if __name__ == '__main__':
-#	plotgraph('samplefile.csv')
+if __name__ == '__main__':
+    plotgraph('samplefile.csv')
